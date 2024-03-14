@@ -13,6 +13,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,8 +25,12 @@ import { TodoFormValues, todoFormSchema } from "@/schema";
 import { useForm } from "react-hook-form";
 import { createTodoAction } from "@/actions/todo.actions";
 import { Checkbox } from "./ui/checkbox";
+import { useState } from "react";
+import Spinner from "./Spinner";
 
 const AddTodoForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const defaultValues: Partial<TodoFormValues> = {
     title: "",
     body: "",
@@ -36,16 +41,18 @@ const AddTodoForm = () => {
     defaultValues,
     mode: "onChange",
   });
-  const onSubmit = async (data: TodoFormValues) => {
-    console.log(data);
+  const onSubmit = async ({ title, completed, body }: TodoFormValues) => {
+    setIsLoading(true);
     await createTodoAction({
-      title: data.title,
-      body: data.body,
-      completed: data.completed,
+      title,
+      body,
+      completed,
     });
+    setIsLoading(false);
+    setOpen(false);
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus />
@@ -54,10 +61,7 @@ const AddTodoForm = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Todo</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you re done.
-          </DialogDescription>
+          <DialogTitle>Add New Todo</DialogTitle>
         </DialogHeader>
         <div className="py-4">
           <Form {...form}>
@@ -69,7 +73,7 @@ const AddTodoForm = () => {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="shadcn" {...field} />
+                      <Input placeholder="new todo ..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -84,12 +88,15 @@ const AddTodoForm = () => {
                     <FormLabel>Short Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Tell us a little bit about yourself"
+                        placeholder="write a short description"
                         className="resize-none"
                         {...field}
                       />
                     </FormControl>
                     <FormMessage />
+                    <FormDescription>
+                      You can write a short description about your next todo
+                    </FormDescription>
                   </FormItem>
                 )}
               />
@@ -98,18 +105,32 @@ const AddTodoForm = () => {
                 name="completed"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormLabel>Completed</FormLabel>
+                    <div className="flex items-center space-x-2 ">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>Completed</FormLabel>
+                    </div>
                     <FormMessage />
+                    <FormDescription>
+                      Your to-do item will be uncompleted by default unless you
+                      checked it
+                    </FormDescription>
                   </FormItem>
                 )}
               />
-              <Button type="submit">Save changes</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Spinner /> Saving
+                  </>
+                ) : (
+                  "Save"
+                )}
+              </Button>
             </form>
           </Form>
         </div>

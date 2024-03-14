@@ -1,11 +1,16 @@
 "use server";
 
 import { PrismaClient } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 
 export const getTodoListAction = async () => {
-  return await prisma.todo.findMany();
+  return await prisma.todo.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 };
 export const createTodoAction = async ({
   title,
@@ -23,6 +28,7 @@ export const createTodoAction = async ({
       completed,
     },
   });
+  revalidatePath("/");
 };
 export const deleteTodoAction = async ({ id }: { id: string }) => {
   await prisma.todo.delete({
@@ -30,5 +36,7 @@ export const deleteTodoAction = async ({ id }: { id: string }) => {
       id,
     },
   });
+
+  revalidatePath("/");
 };
 export const updateTodoAction = async () => {};
