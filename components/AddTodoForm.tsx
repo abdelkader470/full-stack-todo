@@ -28,7 +28,7 @@ import { Checkbox } from "./ui/checkbox";
 import { useState } from "react";
 import Spinner from "./Spinner";
 
-const AddTodoForm = () => {
+const AddTodoForm = ({ userId }: { userId: string | null }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const defaultValues: Partial<TodoFormValues> = {
@@ -47,13 +47,14 @@ const AddTodoForm = () => {
       title,
       body,
       completed,
+      userId,
     });
     setIsLoading(false);
     setOpen(false);
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild className="ml-auto">
         <Button>
           <Plus />
           New Todo
