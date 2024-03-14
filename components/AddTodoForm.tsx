@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TodoFormValues, todoFormSchema } from "@/schema";
 import { useForm } from "react-hook-form";
+import { createTodoAction } from "@/actions/todo.actions";
 
 const AddTodoForm = () => {
   const defaultValues: Partial<TodoFormValues> = {
@@ -34,8 +34,9 @@ const AddTodoForm = () => {
     defaultValues,
     mode: "onChange",
   });
-  const onSubmit = (data: TodoFormValues) => {
+  const onSubmit = async (data: TodoFormValues) => {
     console.log(data);
+    await createTodoAction({ title: data.title, body: data.body });
   };
   return (
     <Dialog>
@@ -47,7 +48,7 @@ const AddTodoForm = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Add Todo</DialogTitle>
           <DialogDescription>
             Make changes to your profile here. Click save when you re done.
           </DialogDescription>
