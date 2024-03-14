@@ -23,11 +23,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { TodoFormValues, todoFormSchema } from "@/schema";
 import { useForm } from "react-hook-form";
 import { createTodoAction } from "@/actions/todo.actions";
+import { Checkbox } from "./ui/checkbox";
 
 const AddTodoForm = () => {
   const defaultValues: Partial<TodoFormValues> = {
-    title: "DEFAULT TITLE",
-    body: "DEFAULT BODY",
+    title: "",
+    body: "",
+    completed: false,
   };
   const form = useForm<TodoFormValues>({
     resolver: zodResolver(todoFormSchema),
@@ -36,7 +38,11 @@ const AddTodoForm = () => {
   });
   const onSubmit = async (data: TodoFormValues) => {
     console.log(data);
-    await createTodoAction({ title: data.title, body: data.body });
+    await createTodoAction({
+      title: data.title,
+      body: data.body,
+      completed: data.completed,
+    });
   };
   return (
     <Dialog>
@@ -83,6 +89,22 @@ const AddTodoForm = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="completed"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Completed</FormLabel>
                     <FormMessage />
                   </FormItem>
                 )}
