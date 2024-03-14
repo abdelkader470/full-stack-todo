@@ -1,11 +1,13 @@
+import { getTodoListAction } from "@/actions/todo.actions";
 import AddTodoForm from "@/components/AddTodoForm";
-import { ModeToggle } from "@/components/ModeToggle";
+import TodosTable from "@/components/TodoTable";
 
-export default function Home() {
+export default async function Home() {
+  const todos = await getTodoListAction();
   return (
     <main className="container">
-      <ModeToggle />
       <AddTodoForm />
+      <TodosTable todos={todos} />
     </main>
   );
 }
