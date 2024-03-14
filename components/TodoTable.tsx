@@ -8,10 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "./ui/button";
-import { Pen, Trash } from "lucide-react";
 import { ITodo } from "@/interfaces";
 import { Badge } from "./ui/badge";
+
+import TodosTableActions from "./TodosTableActions";
 
 export default function TodosTable({ todos }: { todos: ITodo[] }) {
   return (
@@ -38,12 +38,7 @@ export default function TodosTable({ todos }: { todos: ITodo[] }) {
               )}
             </TableCell>
             <TableCell className="text-right space-x-2 ">
-              <Button size={"icon"}>
-                <Pen size={18} />
-              </Button>
-              <Button size={"icon"} variant={"destructive"}>
-                <Trash size={18} />
-              </Button>
+              <TodosTableActions id={todo.id} />
             </TableCell>
           </TableRow>
         ))}
